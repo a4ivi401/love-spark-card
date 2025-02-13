@@ -1,8 +1,11 @@
+
 import { motion, useAnimate } from "framer-motion";
 import { Heart } from "./Heart";
 import { ScrollArea } from "./ui/scroll-area";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
 
 const BackgroundAnimation = () => {
   return (
@@ -76,6 +79,7 @@ const FlyingHeart = ({ x, y, scale }: { x: number; y: number; scale: number }) =
 );
 
 export const ValentineCard = () => {
+  const navigate = useNavigate();
   const sentences = [
     { text: "В этот особенный день я хочу сказать тебе", highlight: "особенный" },
     { text: "Ты делаешь каждый момент волшебным", highlight: "волшебным" },
@@ -99,7 +103,7 @@ export const ValentineCard = () => {
       );
     }
     setHearts(newHearts);
-    setTimeout(() => setHearts([]), 1500); // Очищаем сердечки после анимации
+    setTimeout(() => setHearts([]), 1500);
   };
 
   return (
@@ -132,7 +136,7 @@ export const ValentineCard = () => {
             <Heart />
           </div>
 
-          <div className="min-h-screen flex flex-col items-center justify-center snap-center">
+          <div className="min-h-screen flex flex-col items-center justify-center gap-8 snap-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -152,21 +156,19 @@ export const ValentineCard = () => {
                 {hearts}
               </span>
             </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Button
+                className="bg-valentine-pink hover:bg-valentine-pink/90 text-white"
+                onClick={() => navigate("/image")}
+              >
+                Открыть сюрприз ❤️
+              </Button>
+            </motion.div>
           </div>
-
-          <motion.div 
-            className="min-h-screen w-full snap-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <div 
-              className="w-full h-screen bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: "url('/lovable-uploads/91719634-0c6e-4dc0-a6f9-a892bdd6ee38.png')",
-              }}
-            />
-          </motion.div>
         </div>
       </div>
     </ScrollArea>
