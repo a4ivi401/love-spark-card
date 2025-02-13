@@ -2,7 +2,7 @@ import { motion, useAnimate } from "framer-motion";
 import { Heart } from "./Heart";
 import { ScrollArea } from "./ui/scroll-area";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const BackgroundAnimation = () => {
   return (
@@ -86,18 +86,20 @@ export const ValentineCard = () => {
   const finalMessageRef = useRef(null);
   const finalMessageInView = useInView(finalMessageRef, { once: true, amount: 0.3 });
   const [scope, animate] = useAnimate();
+  const [hearts, setHearts] = useState<React.ReactNode[]>([]);
 
   const createHearts = () => {
-    const hearts = [];
+    const newHearts = [];
     for (let i = 0; i < 15; i++) {
       const randomX = (Math.random() - 0.5) * 200;
       const randomY = Math.random() * -150;
       const scale = Math.random() * 0.5 + 0.5;
-      hearts.push(
-        <FlyingHeart key={i} x={randomX} y={randomY} scale={scale} />
+      newHearts.push(
+        <FlyingHeart key={`heart-${Date.now()}-${i}`} x={randomX} y={randomY} scale={scale} />
       );
     }
-    return hearts;
+    setHearts(newHearts);
+    setTimeout(() => setHearts([]), 1500); // Очищаем сердечки после анимации
   };
 
   return (
@@ -147,10 +149,24 @@ export const ValentineCard = () => {
                 }}
               >
                 люблю
-                {createHearts()}
+                {hearts}
               </span>
             </motion.div>
           </div>
+
+          <motion.div 
+            className="min-h-screen w-full snap-center"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <div 
+              className="w-full h-screen bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: "url('/lovable-uploads/91719634-0c6e-4dc0-a6f9-a892bdd6ee38.png')",
+              }}
+            />
+          </motion.div>
         </div>
       </div>
     </ScrollArea>
