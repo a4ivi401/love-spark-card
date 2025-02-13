@@ -1,8 +1,11 @@
+
 import { motion, useAnimate } from "framer-motion";
 import { Heart } from "./Heart";
 import { ScrollArea } from "./ui/scroll-area";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
 
 const BackgroundAnimation = () => {
   return (
@@ -76,6 +79,7 @@ const FlyingHeart = ({ x, y, scale }: { x: number; y: number; scale: number }) =
 );
 
 export const ValentineCard = () => {
+  const navigate = useNavigate();
   const sentences = [
     { text: "В этот особенный день я хочу сказать тебе", highlight: "особенный" },
     { text: "Ты делаешь каждый момент волшебным", highlight: "волшебным" },
@@ -86,18 +90,20 @@ export const ValentineCard = () => {
   const finalMessageRef = useRef(null);
   const finalMessageInView = useInView(finalMessageRef, { once: true, amount: 0.3 });
   const [scope, animate] = useAnimate();
+  const [hearts, setHearts] = useState<React.ReactNode[]>([]);
 
   const createHearts = () => {
-    const hearts = [];
+    const newHearts = [];
     for (let i = 0; i < 15; i++) {
       const randomX = (Math.random() - 0.5) * 200;
       const randomY = Math.random() * -150;
       const scale = Math.random() * 0.5 + 0.5;
-      hearts.push(
-        <FlyingHeart key={i} x={randomX} y={randomY} scale={scale} />
+      newHearts.push(
+        <FlyingHeart key={`heart-${Date.now()}-${i}`} x={randomX} y={randomY} scale={scale} />
       );
     }
-    return hearts;
+    setHearts(newHearts);
+    setTimeout(() => setHearts([]), 1500);
   };
 
   return (
@@ -130,7 +136,7 @@ export const ValentineCard = () => {
             <Heart />
           </div>
 
-          <div className="min-h-screen flex flex-col items-center justify-center snap-center">
+          <div className="min-h-screen flex flex-col items-center justify-center gap-8 snap-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -147,8 +153,20 @@ export const ValentineCard = () => {
                 }}
               >
                 люблю
-                {createHearts()}
+                {hearts}
               </span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Button
+                className="bg-valentine-pink hover:bg-valentine-pink/90 text-white"
+                onClick={() => navigate("/image")}
+              >
+                Открыть сюрприз ❤️
+              </Button>
             </motion.div>
           </div>
         </div>
