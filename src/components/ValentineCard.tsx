@@ -1,11 +1,9 @@
-
-import { motion } from "framer-motion";
+import { motion, useAnimate } from "framer-motion";
 import { Heart } from "./Heart";
 import { ScrollArea } from "./ui/scroll-area";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 
-// Background animation component
 const BackgroundAnimation = () => {
   return (
     <div className="fixed inset-0 -z-10">
@@ -61,6 +59,22 @@ const AnimatedText = ({ text, highlight }: { text: string; highlight: string }) 
   );
 };
 
+const FlyingHeart = ({ x, y, scale }: { x: number; y: number; scale: number }) => (
+  <motion.div
+    className="absolute text-valentine-pink"
+    initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+    animate={{
+      x: x,
+      y: y,
+      opacity: 0,
+      scale: scale,
+    }}
+    transition={{ duration: 1.5, ease: "easeOut" }}
+  >
+    ❤️
+  </motion.div>
+);
+
 export const ValentineCard = () => {
   const sentences = [
     { text: "В этот особенный день я хочу сказать тебе", highlight: "особенный" },
@@ -71,6 +85,20 @@ export const ValentineCard = () => {
 
   const finalMessageRef = useRef(null);
   const finalMessageInView = useInView(finalMessageRef, { once: true, amount: 0.3 });
+  const [scope, animate] = useAnimate();
+
+  const createHearts = () => {
+    const hearts = [];
+    for (let i = 0; i < 15; i++) {
+      const randomX = (Math.random() - 0.5) * 200;
+      const randomY = Math.random() * -150;
+      const scale = Math.random() * 0.5 + 0.5;
+      hearts.push(
+        <FlyingHeart key={i} x={randomX} y={randomY} scale={scale} />
+      );
+    }
+    return hearts;
+  };
 
   return (
     <ScrollArea className="h-screen">
@@ -100,6 +128,28 @@ export const ValentineCard = () => {
 
           <div className="min-h-screen flex items-center justify-center snap-center">
             <Heart />
+          </div>
+
+          <div className="min-h-screen flex flex-col items-center justify-center snap-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-4xl md:text-6xl font-bold text-center relative"
+              ref={scope}
+            >
+              Я тебя{" "}
+              <span 
+                className="text-valentine-pink cursor-pointer relative"
+                onClick={() => {
+                  animate(scope.current, { scale: [1, 1.1, 1] }, { duration: 0.3 });
+                  createHearts();
+                }}
+              >
+                люблю
+                {createHearts()}
+              </span>
+            </motion.div>
           </div>
         </div>
       </div>
