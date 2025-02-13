@@ -1,9 +1,8 @@
-
 import { motion, useAnimate } from "framer-motion";
 import { Heart } from "./Heart";
 import { ScrollArea } from "./ui/scroll-area";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 const BackgroundAnimation = () => {
   return (
@@ -27,30 +26,6 @@ const BackgroundAnimation = () => {
             duration: 5 + i * 2,
             repeat: Infinity,
             repeatType: "reverse",
-          }}
-        />
-      ))}
-      {/* Добавляем розовые размытые вспышки */}
-      {[...Array(5)].map((_, i) => (
-        <motion.div
-          key={`blur-${i}`}
-          className="absolute rounded-full blur-3xl"
-          style={{
-            width: Math.random() * 300 + 100,
-            height: Math.random() * 300 + 100,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            background: i % 2 === 0 ? "rgba(255, 182, 193, 0.15)" : "rgba(255, 105, 180, 0.1)",
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 7 + i * 2,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut",
           }}
         />
       ))}
@@ -111,25 +86,23 @@ export const ValentineCard = () => {
   const finalMessageRef = useRef(null);
   const finalMessageInView = useInView(finalMessageRef, { once: true, amount: 0.3 });
   const [scope, animate] = useAnimate();
-  const [hearts, setHearts] = useState<React.ReactNode[]>([]);
 
   const createHearts = () => {
-    const newHearts = [];
+    const hearts = [];
     for (let i = 0; i < 15; i++) {
       const randomX = (Math.random() - 0.5) * 200;
       const randomY = Math.random() * -150;
       const scale = Math.random() * 0.5 + 0.5;
-      newHearts.push(
-        <FlyingHeart key={`heart-${Date.now()}-${i}`} x={randomX} y={randomY} scale={scale} />
+      hearts.push(
+        <FlyingHeart key={i} x={randomX} y={randomY} scale={scale} />
       );
     }
-    setHearts(newHearts);
-    setTimeout(() => setHearts([]), 1500); // Очищаем сердечки после анимации
+    return hearts;
   };
 
   return (
     <ScrollArea className="h-screen">
-      <div className="relative min-h-screen bg-gradient-to-b from-white to-pink-50 snap-y snap-mandatory overflow-y-auto">
+      <div className="relative min-h-screen bg-white snap-y snap-mandatory overflow-y-auto">
         <BackgroundAnimation />
         <div className="max-w-4xl mx-auto">
           {sentences.map((sentence, index) => (
@@ -174,30 +147,10 @@ export const ValentineCard = () => {
                 }}
               >
                 люблю
-                {hearts}
+                {createHearts()}
               </span>
             </motion.div>
           </div>
-
-          <motion.div 
-            className="min-h-screen w-full snap-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <div 
-              className="w-full h-screen bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: "url('/lovable-uploads/91719634-0c6e-4dc0-a6f9-a892bdd6ee38.png')",
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: -1
-              }}
-            />
-          </motion.div>
         </div>
       </div>
     </ScrollArea>
