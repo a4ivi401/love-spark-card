@@ -45,7 +45,7 @@ const AnimatedText = ({ text, highlight }: { text: string; highlight: string }) 
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="min-h-screen flex items-center justify-center px-6"
+      className="min-h-screen flex items-center justify-center px-6 snap-center"
     >
       <p className="text-lg md:text-xl leading-relaxed max-w-lg text-center">
         {text.split(highlight).map((part, i, arr) => (
@@ -74,7 +74,7 @@ export const ValentineCard = () => {
 
   return (
     <ScrollArea className="h-screen">
-      <div className="relative min-h-screen bg-white">
+      <div className="relative min-h-screen bg-white snap-y snap-mandatory overflow-y-auto">
         <BackgroundAnimation />
         <div className="max-w-4xl mx-auto">
           {sentences.map((sentence, index) => (
@@ -86,7 +86,7 @@ export const ValentineCard = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={finalMessageInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="min-h-screen flex items-center justify-center px-6"
+            className="min-h-screen flex items-center justify-center px-6 snap-center"
           >
             <div className="text-base md:text-lg text-gray-600 max-w-lg text-center">
               Пусть этот День святого Валентина будет наполнен
@@ -98,7 +98,7 @@ export const ValentineCard = () => {
             </div>
           </motion.div>
 
-          <div className="min-h-screen flex items-center justify-center">
+          <div className="min-h-screen flex items-center justify-center snap-center">
             <Heart />
           </div>
         </div>
